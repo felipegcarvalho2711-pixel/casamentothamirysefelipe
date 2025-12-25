@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Envie sua foto</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 30px; }
+    button { padding: 15px; font-size: 18px; }
+  </style>
+</head>
+<body>
+
+<h2>📸 Envie uma foto para o casamento!</h2>
+
+<input type="file" accept="image/*" capture="camera" id="photoInput">
+<br><br>
+<button onclick="sendPhoto()">Enviar Foto</button>
+
+<p id="status"></p>
+
+<script>
+const SCRIPT_URL = "COLOQUE_AQUI_A_URL_DO_APPS_SCRIPT";
+
+function sendPhoto() {
+  const fileInput = document.getElementById("photoInput");
+  const file = fileInput.files[0];
+
+  if (!file) {
+    alert("Selecione ou tire uma foto primeiro!");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64 = e.target.result;
+
+    google.script.run.withSuccessHandler(function(response) {
+      document.getElementById("status").innerText = "Foto enviada!";
+    }).uploadPhoto(base64, file.name);
+  };
+
+  reader.readAsDataURL(file);
+}
+</script>
+
+</body>
+</html>
